@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>사람 나이 ➔ 햄스터 나이 계산기</title>
+  <title>Hamster Age Calculator</title>
   <style>
     * {
       box-sizing: border-box;
@@ -91,19 +91,89 @@
 <body>
 
   <div class="card">
-    <h2>🐹 햄스터 나이 변환기</h2>
-    <p>사람 나이(세)를 입력하면<br>햄스터 기준 나이로 계산해 드립니다.</p>
+    <h2 id="title">🐹 햄스터 나이 변환기</h2>
+    <p id="description">사람 나이(세)를 입력하면<br>햄스터 기준 나이로 계산해 드립니다.</p>
     
-    <input type="number" id="humanAge" placeholder="사람 나이 입력 (예: 30)" min="0" max="120">
-    <button onclick="calculateAge()">계산하기</button>
+    <input type="number" id="humanAge" placeholder="사람 나이 입력" min="0" max="120">
+    <button id="calcBtn" onclick="calculateAge()">계산하기</button>
 
     <div class="result" id="resultBox"></div>
 
-    <!-- 저작권 표시 -->
     <div class="copyright">© dyudyu2</div>
   </div>
 
   <script>
+    // 언어별 텍스트 데이터 정의
+    const i18n = {
+      ko: {
+        title: "🐹 햄스터 나이 변환기",
+        desc: "사람 나이(세)를 입력하면<br>햄스터 기준 나이로 계산해 드립니다.",
+        placeholder: "사람 나이 입력 (예: 30)",
+        btn: "계산하기",
+        error: "올바른 나이를 입력해 주세요.",
+        resultPrefix: (age) => `사람 <b>${age}세</b>는<br>햄스터 기준으로<br><br>`,
+        years: "살",
+        months: "개월",
+        days: "일",
+        approx: "약 ",
+        resultSuffix: " 입니다! 🌻"
+      },
+      en: {
+        title: "🐹 Hamster Age Calculator",
+        desc: "Enter a human age to convert<br>it to equivalent hamster age.",
+        placeholder: "Enter human age (e.g. 30)",
+        btn: "Calculate",
+        error: "Please enter a valid age.",
+        resultPrefix: (age) => `Human <b>${age} years old</b> is<br>equivalent to<br><br>`,
+        years: " yrs",
+        months: " mos",
+        days: " days",
+        approx: "approx. ",
+        resultSuffix: " in hamster age! 🌻"
+      },
+      ja: {
+        title: "🐹 ハムスター年齢計算機",
+        desc: "人間の年齢を入力すると<br>ハムスターの年齢に換산します。",
+        placeholder: "人間の年齢を入力 (例: 30)",
+        btn: "計算する",
+        error: "正しい年齢を入力してください。",
+        resultPrefix: (age) => `人間で<b>${age}歳</b>は<br>ハムスター基準で<br><br>`,
+        years: "歳 ",
+        months: "ヶ月 ",
+        days: "日",
+        approx: "約 ",
+        resultSuffix: " です！ 🌻"
+      },
+      zh: {
+        title: "🐹 仓鼠年龄计算器",
+        desc: "输入人类年龄<br>计算换算后的仓鼠年龄。",
+        placeholder: "输入人类年龄 (例如: 30)",
+        btn: "计算",
+        error: "请输入有效的年龄。",
+        resultPrefix: (age) => `人类 <b>${age}岁</b><br>相当于仓鼠的<br><br>`,
+        years: "岁 ",
+        months: "个月 ",
+        days: "天",
+        approx: "约 ",
+        resultSuffix: "！ 🌻"
+      }
+    };
+
+    // 브라우저 언어 감지 함수
+    function detectLanguage() {
+      const userLang = (navigator.language || navigator.userLanguage).substring(0, 2);
+      return i18n[userLang] ? userLang : 'ko'; // 기본값 한국어
+    }
+
+    const currentLang = detectLanguage();
+    const t = i18n[currentLang];
+
+    // 페이지 로드 시 텍스트 초기화
+    document.getElementById('title').innerHTML = t.title;
+    document.getElementById('description').innerHTML = t.desc;
+    document.getElementById('humanAge').placeholder = t.placeholder;
+    document.getElementById('calcBtn').innerText = t.btn;
+
     function calculateAge() {
       const humanAgeInput = document.getElementById('humanAge');
       const humanAge = parseFloat(humanAgeInput.value);
@@ -111,7 +181,7 @@
 
       if (isNaN(humanAge) || humanAge < 0) {
         resultBox.style.display = 'block';
-        resultBox.innerHTML = '올바른 나이를 입력해 주세요.';
+        resultBox.innerHTML = t.error;
         return;
       }
 
@@ -122,17 +192,18 @@
       const months = Math.floor(hamsterMonthsTotal % 12);
       const days = Math.round((hamsterMonthsTotal - Math.floor(hamsterMonthsTotal)) * 30);
 
-      let resultText = `사람 <b>${humanAge}세</b>는<br>햄스터 기준으로<br><br>`;
+      let resultText = t.resultPrefix(humanAge);
+      let ageStr = "";
       
       if (years > 0) {
-        resultText += `<span style="font-size: 1.25rem; color: #b45309;">${years}살 ${months}개월 ${days}일</span>`;
+        ageStr = `${years}${t.years} ${months}${t.months} ${days}${t.days}`;
       } else if (months > 0) {
-        resultText += `<span style="font-size: 1.25rem; color: #b45309;">${months}개월 ${days}일</span>`;
+        ageStr = `${months}${t.months} ${days}${t.days}`;
       } else {
-        resultText += `<span style="font-size: 1.25rem; color: #b45309;">약 ${days}일</span>`;
+        ageStr = `${t.approx}${days}${t.days}`;
       }
-      
-      resultText += ` 입니다! 🌻`;
+
+      resultText += `<span style="font-size: 1.25rem; color: #b45309;">${ageStr}</span>` + t.resultSuffix;
 
       resultBox.style.display = 'block';
       resultBox.innerHTML = resultText;
