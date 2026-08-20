@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사람 나이 ➔ 햄스터 나이 계산기</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', 'Segoe UI', sans-serif;
+      background-color: #fff9e6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .card {
+      background: #ffffff;
+      padding: 32px 24px 20px 24px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+    }
+    h2 {
+      color: #d97706;
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 1.4rem;
+    }
+    p {
+      color: #666666;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border: 2px solid #fcd34d;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      text-align: center;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    input:focus {
+      border-color: #f59e0b;
+    }
+    button {
+      width: 100%;
+      background-color: #f59e0b;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s, transform 0.1s;
+    }
+    button:active {
+      transform: scale(0.98);
+    }
+    .result {
+      margin-top: 20px;
+      padding: 18px 15px;
+      background-color: #fef3c7;
+      border-radius: 12px;
+      color: #92400e;
+      font-weight: bold;
+      line-height: 1.6;
+      display: none;
+    }
+    .copyright {
+      margin-top: 24px;
+      font-size: 0.8rem;
+      color: #78350f;
+      opacity: 0.7;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>🐹 햄스터 나이 변환기</h2>
+    <p>사람 나이(세)를 입력하면<br>햄스터 기준 나이로 계산해 드립니다.</p>
+    
+    <input type="number" id="humanAge" placeholder="사람 나이 입력 (예: 30)" min="0" max="120">
+    <button onclick="calculateAge()">계산하기</button>
+
+    <div class="result" id="resultBox"></div>
+
+    <!-- 저작권 표시 -->
+    <div class="copyright">© dyudyu2</div>
+  </div>
+
+  <script>
+    function calculateAge() {
+      const humanAgeInput = document.getElementById('humanAge');
+      const humanAge = parseFloat(humanAgeInput.value);
+      const resultBox = document.getElementById('resultBox');
+
+      if (isNaN(humanAge) || humanAge < 0) {
+        resultBox.style.display = 'block';
+        resultBox.innerHTML = '올바른 나이를 입력해 주세요.';
+        return;
+      }
+
+      // 기준: 사람 80세 = 햄스터 2년(24개월)
+      const hamsterMonthsTotal = humanAge * (24 / 80);
+      
+      const years = Math.floor(hamsterMonthsTotal / 12);
+      const months = Math.floor(hamsterMonthsTotal % 12);
+      const days = Math.round((hamsterMonthsTotal - Math.floor(hamsterMonthsTotal)) * 30);
+
+      let resultText = `사람 <b>${humanAge}세</b>는<br>햄스터 기준으로<br><br>`;
+      
+      if (years > 0) {
+        resultText += `<span style="font-size: 1.25rem; color: #b45309;">${years}살 ${months}개월 ${days}일</span>`;
+      } else if (months > 0) {
+        resultText += `<span style="font-size: 1.25rem; color: #b45309;">${months}개월 ${days}일</span>`;
+      } else {
+        resultText += `<span style="font-size: 1.25rem; color: #b45309;">약 ${days}일</span>`;
+      }
+      
+      resultText += ` 입니다! 🌻`;
+
+      resultBox.style.display = 'block';
+      resultBox.innerHTML = resultText;
+    }
+  </script>
+
+</body>
+</html>
